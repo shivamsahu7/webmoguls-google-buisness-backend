@@ -1,9 +1,11 @@
-import { t } from 'elysia';
+import { z } from 'zod';
 
-export const createContactDto = t.Object({
-  fullName: t.String({ minLength: 1, maxLength: 255 }),
-  businessEmail: t.String({ format: 'email', maxLength: 255, default: '' }),
-  businessName: t.String({ minLength: 1, maxLength: 255 }),
-  website: t.Optional(t.String({ maxLength: 500 })),
-  tellUsAbout: t.Optional(t.String({ maxLength: 5000 })),
+export const createContactDto = z.object({
+  body: z.object({
+    fullName: z.string().min(1).max(255),
+    businessEmail: z.string().email().max(255),
+    businessName: z.string().min(1).max(255),
+    website: z.string().max(500).optional(),
+    tellUsAbout: z.string().max(5000).optional(),
+  }),
 });

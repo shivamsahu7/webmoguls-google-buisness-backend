@@ -1,15 +1,12 @@
-import { Elysia } from 'elysia';
+import { Request, Response, NextFunction } from 'express';
 
-export const loggerMiddleware = new Elysia({ name: 'logger' })
-  .onRequest(({ request }) => {
-    const url = new URL(request.url);
-    console.log(
-      `➡️  ${request.method} ${url.pathname}${url.search} — ${new Date().toISOString()}`
-    );
-  })
-  .onAfterResponse(({ request, set }) => {
-    const url = new URL(request.url);
-    console.log(
-      `⬅️  ${request.method} ${url.pathname} — ${set.status ?? 200}`
-    );
+export const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const url = req.originalUrl;
+  console.log(`➡️  ${req.method} ${url} — ${new Date().toISOString()}`);
+  
+  res.on('finish', () => {
+    console.log(`⬅️  ${req.method} ${url} — ${res.statusCode}`);
   });
+  
+  next();
+};

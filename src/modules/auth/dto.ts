@@ -1,12 +1,16 @@
-import { t } from 'elysia';
+import { z } from 'zod';
 
-export const loginDto = t.Object({
-  email: t.String({ format: 'email', default: '' }),
-  password: t.String({ minLength: 1 }),
+export const loginDto = z.object({
+  body: z.object({
+    email: z.string().email(),
+    password: z.string().min(1),
+  }),
 });
 
-export const registerDto = t.Object({
-  name: t.String({ minLength: 1, maxLength: 255 }),
-  email: t.String({ format: 'email', maxLength: 255, default: '' }),
-  password: t.String({ minLength: 8, maxLength: 255 }),
+export const registerDto = z.object({
+  body: z.object({
+    name: z.string().min(1).max(255),
+    email: z.string().email().max(255),
+    password: z.string().min(8).max(255),
+  }),
 });

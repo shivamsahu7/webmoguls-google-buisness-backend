@@ -1,30 +1,25 @@
-import { throttle } from '../middleware/throttle.js';
+import rateLimit from 'express-rate-limit';
 
-/**
- * Pre-configured rate limit presets.
- * Modules simply `.use()` the preset they need — no config duplication.
- *
- * Usage: .use(rateLimits.strict)
- */
 export const rateLimits = {
-  /** 1 request per minute — for form submissions (contact us, etc.) */
-  strict: throttle({
-    maxRequests: 1,
+  strict: rateLimit({
     windowMs: 60 * 1000,
-    message: 'Too many submissions. Please wait 1 minute before trying again.',
+    max: 1,
+    message: { success: false, error: 'Too many submissions. Please wait 1 minute before trying again.' },
+    standardHeaders: true,
+    legacyHeaders: false,
   }),
-
-  /** 10 requests per minute — for auth endpoints (login, register) */
-  auth: throttle({
-    maxRequests: 10,
+  auth: rateLimit({
     windowMs: 60 * 1000,
-    message: 'Too many authentication attempts. Please wait and try again.',
+    max: 10,
+    message: { success: false, error: 'Too many authentication attempts. Please wait and try again.' },
+    standardHeaders: true,
+    legacyHeaders: false,
   }),
-
-  /** 60 requests per minute — general API usage */
-  standard: throttle({
-    maxRequests: 60,
+  standard: rateLimit({
     windowMs: 60 * 1000,
-    message: 'Rate limit exceeded. Please slow down.',
+    max: 60,
+    message: { success: false, error: 'Rate limit exceeded. Please slow down.' },
+    standardHeaders: true,
+    legacyHeaders: false,
   }),
-} as const;
+};

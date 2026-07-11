@@ -1,17 +1,23 @@
-import { t } from 'elysia';
+import { z } from 'zod';
 
-export const createUserDto = t.Object({
-  name: t.String({ minLength: 1, maxLength: 255 }),
-  email: t.String({ format: 'email', maxLength: 255, default: '' }),
-  password: t.String({ minLength: 8, maxLength: 255 }),
+export const createUserDto = z.object({
+  body: z.object({
+    name: z.string().min(1).max(255),
+    email: z.string().email().max(255),
+    password: z.string().min(8).max(255),
+  }),
 });
 
-export const updateUserDto = t.Object({
-  name: t.Optional(t.String({ minLength: 1, maxLength: 255 })),
-  email: t.Optional(t.String({ format: 'email', maxLength: 255, default: '' })),
-  isActive: t.Optional(t.Boolean()),
+export const updateUserDto = z.object({
+  body: z.object({
+    name: z.string().min(1).max(255).optional(),
+    email: z.string().email().max(255).optional(),
+    isActive: z.boolean().optional(),
+  }),
 });
 
-export const userIdParam = t.Object({
-  id: t.Numeric(),
+export const userIdParam = z.object({
+  params: z.object({
+    id: z.coerce.number(),
+  }),
 });

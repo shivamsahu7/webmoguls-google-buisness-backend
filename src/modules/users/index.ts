@@ -1,75 +1,73 @@
-import { Elysia } from 'elysia';
-import { dbPlugin } from '../../plugins/db.js';
+import { Router } from 'express';
+import { db } from '../../db/index.js';
 import { UserService } from './service.js';
 import { createUserDto, updateUserDto, userIdParam } from './dto.js';
 import { success, error } from '../../shared/utils/response.js';
+import { validate } from '../../shared/utils/validate.js';
 
-export const usersModule = new Elysia({ prefix: '/users' })
-  .use(dbPlugin)
-  .derive(({ db }) => {
-    return { userService: new UserService(db) };
-  })
+export const usersRouter = Router();
+const userService = new UserService(db);
 
-  // GET /users — List all users
-  .get('/', async ({ userService }) => {
-    const users = await userService.findAll();
-    return success(users, 'Users retrieved successfully');
-  })
+// GET /users
+usersRouter.get('/', async (req, res) => {
+  const users = await userService.findAll();
+  res.json(success(users, 'Users retrieved successfully'));
+});
 
-  // GET /users/:id — Get user by ID
-  .get(
-    '/:id',
-    async ({ userService, params, set }) => {
-      const user = await userService.findById(params.id);
-      if (!user) {
-        set.status = 404;
-        return error('User not found');
-      }
-      return success(user);
-    },
-    { params: userIdParam }
-  )
+// GET /users/:id
+usersRouter.get(
+  '/:id',
+  validate(userIdParam),
+  async (req, res) => {
+    const user = await userService.findById(Number(req.params.id));
+    if (!user) {
+      res.status(404).json(error('User not found'));
+      return;
+    }
+    res.json(success(user));
+  }
+);
 
-  // POST /users — Create new user
-  .post(
-    '/',
-    async ({ userService, body, set }) => {
-      const existing = await userService.findByEmail(body.email);
-      if (existing) {
-        set.status = 409;
-        return error('Email already exists');
-      }
-      const user = await userService.create(body);
-      set.status = 201;
-      return success(user, 'User created successfully');
-    },
-    { body: createUserDto }
-  )
+// POST /users
+usersRouter.post(
+  '/',
+  validate(createUserDto),
+  async (req, res) => {
+    const existing = await userService.findByEmail(req.body.email);
+    if (existing) {
+      res.status(409).json(error('Email already exists'));
+      return;
+    }
+    const user = await userService.create(req.body);
+    res.status(201).json(success(user, 'User created successfully'));
+  }
+);
 
-  // PUT /users/:id — Update user
-  .put(
-    '/:id',
-    async ({ userService, params, body, set }) => {
-      const user = await userService.update(params.id, body);
-      if (!user) {
-        set.status = 404;
-        return error('User not found');
-      }
-      return success(user, 'User updated successfully');
-    },
-    { params: userIdParam, body: updateUserDto }
-  )
+// PUT /users/:id
+usersRouter.put(
+  '/:id',
+  validate(userIdParam),
+  validate(updateUserDto),
+  async (req, res) => {
+    const user = await userService.update(Number(req.params.id), req.body);
+    if (!user) {
+      res.status(404).json(error('User not found'));
+      return;
+    }
+    res.json(success(user, 'User updated successfully'));
+  }
+);
 
-  // DELETE /users/:id — Delete user
-  .delete(
-    '/:id',
-    async ({ userService, params, set }) => {
-      const user = await userService.delete(params.id);
-      if (!user) {
-        set.status = 404;
-        return error('User not found');
-      }
-      return success(user, 'User deleted successfully');
-    },
-    { params: userIdParam }
-  );
+// DELETE /users/:id
+usersRouter.delete(
+  '/:id',
+  validate(userIdParam),
+  async (req, res) => {
+    const user = await userService.delete(Number(req.params.id));
+    if (!user) {
+      res.status(404).json(error('User not found'));
+      return;
+    }
+    res.json(success(user, 'User deleted successfully'));
+  }
+);
