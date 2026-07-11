@@ -16,7 +16,7 @@ export const app = new Elysia({ adapter: node() })
     cors({
       origin: env.NODE_ENV === 'development'
         ? true
-        : env.CORS_ORIGIN,
+        : env.CORS_ORIGIN.split(',').map((o) => o.trim()),
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
@@ -81,9 +81,36 @@ export const app = new Elysia({ adapter: node() })
     return { success: false, error: 'Internal server error' };
   })
 
-  // Health check
-  .get('/', () => success({ status: 'healthy', uptime: process.uptime() }, 'Server is running'), {
-    detail: { summary: 'Root Health Check', tags: ['Health'] },
+  // Root Welcome Page
+  .get('/', ({ set }) => {
+    set.headers['Content-Type'] = 'text/html';
+    return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WebMoguls API</title>
+        <style>
+          body { font-family: system-ui, -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #0f172a; color: #f8fafc; }
+          .container { text-align: center; padding: 2rem; border-radius: 1rem; background-color: #1e293b; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+          h1 { color: #38bdf8; margin-top: 0; }
+          p { color: #94a3b8; }
+          a { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 0.5rem; transition: background-color 0.2s; }
+          a:hover { background-color: #2563eb; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>🚀 WebMoguls API is running!</h1>
+          <p>The backend services are fully operational.</p>
+          <a href="/docs">View API Documentation</a>
+        </div>
+      </body>
+      </html>
+    `;
+  }, {
+    detail: { summary: 'Root Welcome Page', tags: ['Health'] },
   })
   .get('/health', () => success({ status: 'healthy', uptime: process.uptime() }), {
     detail: { summary: 'Health Check', tags: ['Health'] },
