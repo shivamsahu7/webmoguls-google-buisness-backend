@@ -1,0 +1,1 @@
+ALTER TABLE `contacts` MODIFY COLUMN `tell_us_about` text;
