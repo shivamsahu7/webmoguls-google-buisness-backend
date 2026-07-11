@@ -1,0 +1,1 @@
+{"version":3,"file":"contacts.d.ts","sourceRoot":"","sources":["../../../src/db/schema/contacts.ts"],"names":[],"mappings":"AAQA,eAAO,MAAM,QAAQ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAQnB,CAAC;AAEH,MAAM,MAAM,OAAO,GAAG,OAAO,QAAQ,CAAC,YAAY,CAAC;AACnD,MAAM,MAAM,UAAU,GAAG,OAAO,QAAQ,CAAC,YAAY,CAAC"}

@@ -1,0 +1,21 @@
+# Database
+DATABASE_URL=mysql://u945156960_webmogulsgbp:pZ9%23vL2%24mK7%21rW4%40@193.203.184.5:3306/u945156960_webmogulsgbp
+
+# Server
+PORT=3000
+NODE_ENV=development
+
+# CORS
+CORS_ORIGIN=https://webmogulsgbp.com,http://localhost:3001
+
+# SMTP (for future use)
+SMTP_HOST=smtp.hostinger.com
+TSMTP_POR=465
+SMTP_USER=gmb@webmogulsgbp.com
+SMTP_PASS=pZ9#vL2$mK7!rW4@
+
+
+# smtp.hostinger.com
+# 465
+# gmb@webmogulsgbp.com
+# pZ9#vL2$mK7!rW4@
