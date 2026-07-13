@@ -20,7 +20,7 @@ contactUsRouter.post(
       const contact = await contactService.create(req.body);
       res.status(201).json(success(contact, MESSAGES.CONTACT_SUCCESS));
     } catch (err) {
-      console.error('❌ Contact form submission failed:', err);
+      console.error('❌ Contact form submission failed:', err instanceof Error ? (err.stack || err.message) + (err.cause ? '\\nCause: ' + JSON.stringify(err.cause) : '') : err);
       res.status(500).json(error(MESSAGES.CONTACT_ERROR));
     }
   }
