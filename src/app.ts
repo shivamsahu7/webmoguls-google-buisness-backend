@@ -8,6 +8,7 @@ import { contactUsRouter } from './modules/contact-us/index.js';
 import { success } from './shared/utils/response.js';
 
 export const app = express();
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(express.json());
