@@ -17,7 +17,14 @@ contactUsRouter.post(
   validate(createContactDto),
   async (req, res) => {
     try {
-      const contact = await contactService.create(req.body);
+      const { fullName, businessEmail, businessName, website, tellUsAbout } = req.body;
+      const contact = await contactService.create({
+        fullName,
+        businessEmail,
+        businessName,
+        website: website ?? null,
+        tellUsAbout: tellUsAbout ?? null,
+      });
       res.status(201).json(success(contact, MESSAGES.CONTACT_SUCCESS));
     } catch (err) {
       console.error('❌ Contact form submission failed:', err instanceof Error ? (err.stack || err.message) + (err.cause ? '\\nCause: ' + JSON.stringify(err.cause) : '') : err);
