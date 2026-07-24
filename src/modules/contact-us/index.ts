@@ -27,7 +27,10 @@ contactUsRouter.post(
       });
       res.status(201).json(success(contact, MESSAGES.CONTACT_SUCCESS));
     } catch (err) {
-      console.error('❌ Contact form submission failed:', err instanceof Error ? (err.stack || err.message) + (err.cause ? '\\nCause: ' + JSON.stringify(err.cause) : '') : err);
+      console.error('❌ Contact form submission failed:', err);
+      if (err instanceof Error && err.cause) {
+        console.error('❌ Root cause (MySQL error):', err.cause);
+      }
       res.status(500).json(error(MESSAGES.CONTACT_ERROR));
     }
   }
